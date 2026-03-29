@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROBOHOLIC 2K26 - Leaderboard</title>
+
+    <style>
+        :root {
+            --bg: #020408;
+            --panel: #071523;
+            --neon: #00ffff;
+            --neon2: #ff2d78;
+            --neon3: #ffe600;
+            --gold: #ffd700;
+            --silver: #c0c0c0;
+            --bronze: #cd7f32;
+            --text: #e0f7fa;
+            --muted: #5a8a9f;
+            --glow: 0 0 10px var(--neon), 0 0 20px var(--neon);
+            --glow2: 0 0 10px var(--neon2), 0 0 20px var(--neon2);
+        }
+
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Rajdhani', sans-serif;
+            display: flex;
+            justify-content: center;
+            /* horizontal center */
+            align-items: center;
+            /* vertical center */
+        }
+
+        .center-box {
+            width: 100%;
+            max-width: 600px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .center-box h2 {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon);
+            margin-bottom: 20px;
+            text-shadow: 0 0 15px var(--neon);
+        }
+
+        .leaderboard {
+            background: var(--panel);
+            border: 1px solid rgba(0, 255, 255, .15);
+            padding: 20px;
+            width: 100%;
+            margin-bottom: 24px;
+        }
+
+        .lb-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 10px;
+            border-bottom: 1px solid rgba(0, 255, 255, .06);
+            transition: background .2s;
+        }
+
+        .lb-row:last-child {
+            border-bottom: none;
+        }
+
+        .lb-row:hover {
+            background: rgba(0, 255, 255, .04);
+        }
+
+        .lb-pos {
+            font-family: 'Orbitron', sans-serif;
+            font-size: .75rem;
+            font-weight: 700;
+            width: 28px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+
+        .pos-1 {
+            color: var(--gold);
+            text-shadow: 0 0 10px rgba(255, 215, 0, .6);
+        }
+
+        .pos-2 {
+            color: var(--silver);
+            text-shadow: 0 0 10px rgba(192, 192, 192, .4);
+        }
+
+        .pos-3 {
+            color: var(--bronze);
+            text-shadow: 0 0 10px rgba(205, 127, 50, .4);
+        }
+
+        .pos-4,
+        .pos-5,
+        .pos-6 {
+            color: var(--muted);
+        }
+
+        .lb-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .lb-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .lb-name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: .72rem;
+            font-weight: 700;
+            color: var(--text);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .lb-sub {
+            font-size: .65rem;
+            color: var(--muted);
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        .lb-score {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.1rem;
+            font-weight: 900;
+            flex-shrink: 0;
+        }
+
+        .lb-bar-wrap {
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, .05);
+            margin-top: 6px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .lb-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--neon), var(--neon2));
+            border-radius: 2px;
+            transition: width .6s ease;
+        }
+
+        .input-panel {
+            background: var(--panel);
+            border: 1px solid rgba(255, 45, 120, .2);
+            padding: 20px;
+            max-width: 500px;
+        }
+
+        .input-group {
+            margin-bottom: 14px;
+        }
+
+        label {
+            display: block;
+            font-size: .7rem;
+            letter-spacing: 3px;
+            color: var(--muted);
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            font-family: 'Share Tech Mono', monospace;
+        }
+
+        select,
+        input[type="number"] {
+            width: 100%;
+            padding: 10px;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: .95rem;
+            outline: none;
+            background: rgba(0, 0, 0, .5);
+            border: 1px solid rgba(0, 255, 255, .2);
+            color: var(--text);
+        }
+
+        select:focus,
+        input:focus {
+            border-color: var(--neon);
+            box-shadow: 0 0 0 2px rgba(0, 255, 255, .1);
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 11px;
+            font-family: 'Orbitron', sans-serif;
+            font-size: .65rem;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            border: none;
+            transition: .2s;
+        }
+
+        .btn-add {
+            background: linear-gradient(135deg, rgba(0, 255, 255, .15), rgba(0, 255, 255, .05));
+            border: 1px solid rgba(0, 255, 255, .4);
+            color: var(--neon);
+        }
+
+        .btn-add:hover {
+            background: rgba(0, 255, 255, .2);
+            box-shadow: var(--glow);
+            transform: translateY(-1px);
+        }
+
+        .btn-sub {
+            background: linear-gradient(135deg, rgba(255, 45, 120, .15), rgba(255, 45, 120, .05));
+            border: 1px solid rgba(255, 45, 120, .4);
+            color: var(--neon2);
+        }
+
+        .btn-sub:hover {
+            background: rgba(255, 45, 120, .2);
+            box-shadow: var(--glow2);
+            transform: translateY(-1px);
+        }
+
+        .toast {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: var(--panel);
+            border: 1px solid var(--neon);
+            color: var(--neon);
+            font-family: 'Share Tech Mono', monospace;
+            font-size: .8rem;
+            letter-spacing: 2px;
+            padding: 12px 28px;
+            box-shadow: var(--glow);
+            z-index: 1000;
+            transition: transform .3s ease;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="center-box">
+        <h2>ROBOHOLIC 2K26 Leaderboard</h2>
+
+        <div class="leaderboard" id="leaderboard"></div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+        const TEAMS = [{
+                id: 0,
+                name: "MEGATRON",
+                icon: "🤖"
+            },
+            {
+                id: 1,
+                name: "CYBER KNIGHTS",
+                icon: "⚔️"
+            },
+            {
+                id: 2,
+                name: "CYCLON",
+                icon: "🌀"
+            },
+            {
+                id: 3,
+                name: "CRYPTO KNIGHTS",
+                icon: "🛡️"
+            },
+            {
+                id: 4,
+                name: "VOLTAGE VIPERS",
+                icon: "⚡"
+            },
+            {
+                id: 5,
+                name: "ROBO WRAGLERS",
+                icon: "🦾"
+            }
+        ];
+        let scores = [80, 185, 95, 60, 130, 120];
+
+        const medals = ["🥇", "🥈", "🥉", "4", "5", "6"];
+        const medalClass = ["pos-1", "pos-2", "pos-3", "pos-4", "pos-5", "pos-6"];
+
+        function getRanked() {
+            return [...TEAMS].map((t, i) => ({
+                    ...t,
+                    score: scores[i]
+                }))
+                .sort((a, b) => b.score - a.score || a.id - b.id);
+        }
+
+        function renderLeaderboard() {
+            const ranked = getRanked();
+            const max = Math.max(...scores.map(s => Math.abs(s)), 1);
+
+            document.getElementById('leaderboard').innerHTML = ranked.map((t, i) => `
+    <div class="lb-row">
+      <div class="lb-pos ${medalClass[i]}">${medals[i]}</div>
+      <div class="lb-icon">${t.icon}</div>
+      <div class="lb-info">
+        <div class="lb-name">${t.name}</div>
+        <div class="lb-bar-wrap">
+          <div class="lb-bar" style="width:${(Math.abs(t.score)/max)*100}%"></div>
+        </div>
+      </div>
+      <div class="lb-score" style="color:${t.score<0?'#ff4d4d':'#ffe600'}">${t.score}</div>
+    </div>
+  `).join('');
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            t.textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        // Initial load
+        renderLeaderboard();
+    </script>
+
+</body>
+
+</html>
